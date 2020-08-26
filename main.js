@@ -1,8 +1,11 @@
 
+// ......... Zip up with compressed jquery.js
+// ......... Remove console logs?
 // ....... Tidy card edges
 // ...... Make a tally that shows the number of wins, losses and draws
 // ..... Display current score
 // ..... Add Blackjack rule and "Blackjack!" notice
+// ..... Make webpage responsive
 // .... "You Win!" bigger and "Play again?" smaller
 // .... Make sure that no card appears twice
 // .... Add transitions
@@ -10,17 +13,18 @@
 // .... Buttons on:hover
 // .... Tidy up code big time
 // ... Put repeated code into global scope
-// ... Get rid of anon func in setTimeouts
 // .. Fade things away when restarting game
 // . Add rules (inc "Dealer must draw on 16 and stand on 17")
-// Make webpage responsive
+// Position "Bust" and "21"
 
 
 const cards = [];
 let dealerCards = [];
 let dealerTotalScore;
+let dealerColumns = '';
 let playerCards = [];
 let playerTotalScore;
+let playerColumns = '';
 let noOfPlayerCards = 0;
 const shortDelay = 300;
 const mediumDelay = 500;
@@ -33,7 +37,6 @@ for (let i = 2; i <= 14; i++) { // Populates cards array using cardFactory().
   cards.push(cardFactory('hearts', i));
   cards.push(cardFactory('spades', i));
 }
-
 
 $('#begin').on('click', displayCards);
 
@@ -73,9 +76,7 @@ function displayCards() { // Begins the game.
         $('#player2').show();
         window.setTimeout(function() {
           $('#dealer2').show();
-          window.setTimeout(function() {
-            dealerFirstTurn();
-          }, shortDelay);
+          window.setTimeout(dealerFirstTurn, shortDelay);
         }, shortDelay);
       }, shortDelay);
     }, shortDelay);
@@ -138,7 +139,7 @@ function playerTurn() { // Once dealer has been dealt first card.
     }
     scoreCards();
 
-    while (playerTotalScore > 21) { // Turn first 11 into a 1 when necessary.
+    while (playerTotalScore > 21) { // Turns first 11 into a 1 when necessary.
       if (playerCards.findIndex(element => element === 11) !== -1) {
         playerCards[playerCards.findIndex(element => element === 11)] = 1;
 
@@ -148,7 +149,7 @@ function playerTurn() { // Once dealer has been dealt first card.
       }
     }
 
-    if (playerTotalScore >= 21) { // Turn off hit and stay buttons.
+    if (playerTotalScore >= 21) { // Turns off hit and stay buttons.
       $('#hit').off('click', hit);
       $('#stay').off('click', stay);
     }
@@ -164,21 +165,7 @@ function playerTurn() { // Once dealer has been dealt first card.
       .show()
       .attr('src', `card-pics/${playerCard}.jpg`);
 
-    let columns = '';
-    for (let i = 1; i < noOfPlayerCards; i++) {
-      columns += 'minmax(40px, 1fr) ';
-    }
-    columns += '224px';
-    $('#playerGrid').css('grid-template-columns', columns);
-    if (noOfPlayerCards > 3) {
-      $('#playerGrid').css('max-width', '630px');
-    }
-    if (noOfPlayerCards > 4) {
-      $('#playerGrid').css('max-width', '670px');
-    }
-    if (noOfPlayerCards > 5) {
-      $('#playerGrid').css('max-width', '690px');
-    }
+    addGridColumn('#playerGrid', playerColumns, noOfPlayerCards);
 
     if (playerTotalScore === 21) { // Twenty One!
       console.log('Twenty One!');
@@ -231,9 +218,7 @@ function playerTurn() { // Once dealer has been dealt first card.
           .hide();
     }, longDelay);
 
-    window.setTimeout(function() {
-      dealerTurn();
-    }, shortDelay);
+    window.setTimeout(dealerTurn, shortDelay);
     $('#stay').off('click', stay);
     $('#hit').off('click', hit);
   }
@@ -272,7 +257,7 @@ function dealerTurn() { // After player has finished their turn.
     }
     scoreCards();
 
-    while (dealerTotalScore > 21) { // Turn first 11 into a 1 when necessary.
+    while (dealerTotalScore > 21) { // Turns first 11 into a 1 when necessary.
       if (dealerCards.findIndex(element => element === 11) !== -1) {
         //turn first 11 into a 1
         dealerCards[dealerCards.findIndex(element => element === 11)] = 1;
@@ -293,21 +278,7 @@ function dealerTurn() { // After player has finished their turn.
       .show()
       .attr('src', `card-pics/${dealerCard}.jpg`);
 
-    let columns = '';
-    for (let i = 1; i < noOfDealerCards; i++) {
-      columns += 'minmax(40px, 1fr) ';
-    }
-    columns += '224px';
-    $('#dealerGrid').css('grid-template-columns', columns);
-    if (noOfDealerCards > 3) {
-      $('#dealerGrid').css('max-width', '630px');
-    }
-    if (noOfDealerCards > 4) {
-      $('#DealerGrid').css('max-width', '670px');
-    }
-    if (noOfDealerCards > 5) {
-      $('#DealerGrid').css('max-width', '690px');
-    }
+    addGridColumn('#dealerGrid', dealerColumns, noOfDealerCards);
 
     if (dealerTotalScore === 21) { // Twenty One.
       console.log('Twenty One');
@@ -422,8 +393,10 @@ function resetGame() { // Resets cards and scores.
   console.log('\nresetGame');
   dealerCards = [];
   dealerTotalScore;
+  dealerColumns = '';
   playerCards = [];
   playerTotalScore;
+  playerColumns = '';
   noOfPlayerCards = 0;
 
   for (let i = 1; i <= 12; i++) {
@@ -438,4 +411,21 @@ function resetGame() { // Resets cards and scores.
   $('#win, #lose, #draw').off('click');
 
   $('#dealerGrid, #playerGrid').css('grid-template-columns', '1fr 1fr');
+}
+
+function addGridColumn(whichGrid, whichColumns, noOfCards) { // Adds a new grid column for the new card.
+  for (let i = 1; i < noOfCards; i++) {
+    whichColumns += 'minmax(40px, 1fr) ';
+  }
+  whichColumns += '224px';
+  $(whichGrid).css('grid-template-columns', whichColumns);
+  if (noOfCards > 3) {
+    $(whichGrid).css('max-width', '630px');
+  }
+  if (noOfCards > 4) {
+    $(whichGrid).css('max-width', '670px');
+  }
+  if (noOfCards > 5) {
+    $(whichGrid).css('max-width', '690px');
+  }
 }
