@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Blackjack</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body> <div id="bigDiv">
+
+    <div class="colour" id="top"></div>
+    <div class="colour" id="bottom"></div>
+
+    <div class="noticeParent" id="beginParent">
+      <div class="notice mainNotice" id="begin">
+        <h2>Begin!</h2>
+      </div>
+    </div>
+    <div class="noticeParent" id="winParent">
+      <div class="notice mainNotice" id="win">
+        <h2>You win!<br>Play again</h2>
+      </div>
+    </div>
+    <div class="noticeParent" id="loseParent">
+      <div class="notice mainNotice" id="lose">
+        <h2>Dealer Wins!<br>Play again</h2>
+      </div>
+    </div>
+    <div class="noticeParent" id="drawParent">
+      <div class="notice mainNotice" id="draw">
+        <h2>Draw<br>Play again</h2>
+      </div>
+    </div>
+
+    <div class="dealerNotice" id="dealerBustParent">
+      <div class="notice dealerPosition" id="dealerBust">
+        <h3>Bust!</h3>
+      </div>
+    </div>
+    <div class="dealerNotice" id="dealerTwentyOneParent">
+      <div class="notice dealerPosition" id="dealerTwentyOne">
+        <h3>Twenty One!</h3>
+      </div>
+    </div>
+    <div class="playerNotice" id="playerBustParent">
+      <div class="notice playerPosition" id="playerBust">
+        <h3>Bust!</h3>
+      </div>
+    </div>
+    <div class="playerNotice" id="playerTwentyOneParent">
+      <div class="notice playerPosition" id="playerTwentyOne">
+        <h3>Twenty One!</h3>
+      </div>
+    </div>
+
+    <header>
+      <h1>BLACKJACK</h1>
+    </header>
+    <main>
+      <section id="game">
+
+
+        <div id="dealer">
+          <div id="dealerTurnDiv">
+            <h3>Dealer's Turn
+              <span id="dealerHit"> &nbsp; HIT</span>
+              <span id="dealerStay"> &nbsp; STAY</span>
+            </h3>
+          </div>
+            <div id="dealerGrid">
+              <img src="card-back.png" alt="Dealer card 1" class="card" id="dealer1">
+              <img src="card-back.png" alt="Dealer card 2" class="card" id="dealer2">
+              <img src="card-back.png" alt="Dealer card 3" class="card" id="dealer3">
+              <img src="card-back.png" alt="Dealer card 4" class="card" id="dealer4">
+              <img src="card-back.png" alt="Dealer card 5" class="card" id="dealer5">
+              <img src="card-back.png" alt="Dealer card 6" class="card" id="dealer6">
+              <img src="card-back.png" alt="Dealer card 7" class="card" id="dealer7">
+              <img src="card-back.png" alt="Dealer card 8" class="card" id="dealer8">
+              <img src="card-back.png" alt="Dealer card 9" class="card" id="dealer9">
+              <img src="card-back.png" alt="Dealer card 10" class="card" id="dealer10">
+              <img src="card-back.png" alt="Dealer card 11" class="card" id="dealer11">
+              <img src="card-back.png" alt="Dealer card 12" class="card" id="dealer12">
+            </div>
+        </div>
+
+        <div id="centre">
+        </div>
+
+        <div id="player">
+          <div id="playerTurnDiv">
+            <h3>Your Turn
+              <span id="playerHit"> &nbsp; HIT</span>
+              <span id="playerStay"> &nbsp; STAY</span>
+            </h3>
+          </div>
+          <div id="playerGrid">
+            <img src="card-back.png" alt="Player card 1" class="card" id="player1">
+            <img src="card-back.png" alt="Player card 2" class="card" id="player2">
+            <img src="card-back.png" alt="Player card 3" class="card" id="player3">
+            <img src="card-back.png" alt="Player card 4" class="card" id="player4">
+            <img src="card-back.png" alt="Player card 5" class="card" id="player5">
+            <img src="card-back.png" alt="Player card 6" class="card" id="player6">
+            <img src="card-back.png" alt="Player card 7" class="card" id="player7">
+            <img src="card-back.png" alt="Player card 8" class="card" id="player8">
+            <img src="card-back.png" alt="Player card 9" class="card" id="player9">
+            <img src="card-back.png" alt="Player card 10" class="card" id="player10">
+            <img src="card-back.png" alt="Player card 11" class="card" id="player11">
+            <img src="card-back.png" alt="Player card 12" class="card" id="player12">
+          </div>
+        </div>
+
+        <div id="buttons">
+          <div id="hit">
+            <h2>HIT</h2>
+          </div>
+          <div id="stay">
+            <h2>STAY</h2>
+          </div>
+        </div>
+
+
+      </section>
+    </main>
+    <!-- <footer>
+      <p></p>
+    </footer> -->
+    <script src="jquery.js" charset="utf-8"></script>
+    <script src="main.js" charset="utf-8"></script>
+
+  </div> </body>
+</html>
