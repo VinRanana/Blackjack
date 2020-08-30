@@ -1,19 +1,20 @@
 // By Davinder Rana
 
+// Visible running totals added.
 // Console logs for debugging left in.
 
 const cards = [];
 let dealerCards = [];
-let dealerTotalScore;
+let dealerTotalScore = 0;
 let dealerColumns = '';
 let playerCards = [];
-let playerTotalScore;
+let playerTotalScore = 0;
 let playerColumns = '';
 let noOfPlayerCards = 0;
-const shortDelay = 200;
+const shortDelay = 300;
 const mediumDelay = 450;
 const longDelay = 800;
-const longerDelay = 2400;
+const longerDelay = 2800;
 
 
 for (let i = 2; i <= 14; i++) { // Populates cards array using cardFactory().
@@ -29,10 +30,14 @@ $('#begin').on('click', displayCards);
 
 function displayCards() { // Begins the game.
   console.log('\ndisplayCards');
+
   $('.notice')
       .off('click', displayCards)
       .fadeTo('fast', 0)
       .hide();
+
+  $('#triangle-up, #triangle-down, #dealerScoreH, #playerScoreH')
+      .css('opacity', '0.4');
 
   resetGame();
 
@@ -60,7 +65,11 @@ function displayCards() { // Begins the game.
         .show();
   }, shortDelay * 4);
 
-  window.setTimeout(dealerFirstTurn, shortDelay * 5);
+  window.setTimeout(function() {
+    $('#triangle-up, #dealerScoreH').css('opacity', '1');
+
+    dealerFirstTurn();
+  }, shortDelay * 5);
 }
 
 
@@ -82,8 +91,11 @@ function dealerFirstTurn() { // Dealer gets first card face-up.
   console.log('\n');
 
   $('#dealer1')
-      .css('filter','')
+      .css('filter','brightness(1)')
       .attr('src', `card-pics/${dealerCard1}.jpg`);
+
+  $('#dealerScoreH').text(dealerTotalScore);
+  $('#playerScoreH').text(playerTotalScore);
 
   playerTurn();
 }
@@ -100,7 +112,10 @@ function playerTurn() { // Once dealer has been dealt first card.
     $('#playerTurnDiv').fadeTo('fast', 1);
     $('#player').css('border-style', 'solid');
     $('#hit, #stand').fadeTo('fast', 1);
+    $('#triangle-up, #dealerScoreH').css('opacity', '0.4');
+    $('#triangle-down, #playerScoreH').css('opacity', '1');
   }, mediumDelay + shortDelay);
+
 
   function playerDrawCard() {
     console.log('playerDrawCard');
@@ -146,7 +161,10 @@ function playerTurn() { // Once dealer has been dealt first card.
     $(`#player${noOfPlayerCards}`) // Displays drawn card.
         .show()
         .attr('src', `card-pics/${playerCard}.jpg`)
-        .css('filter','');
+        .css('filter','brightness(1)');
+
+        $('#dealerScoreH').text(dealerTotalScore);
+        $('#playerScoreH').text(playerTotalScore);
 
     addGridColumn('#playerGrid', playerColumns, noOfPlayerCards);
 
@@ -204,7 +222,8 @@ function dealerTurn() { // After player has finished their turn.
   $('#hit, #stand').fadeTo('fast', 0.4);
   $('#dealerTurnDiv').fadeTo('fast', 1);
   $('#dealer').css('border-style', 'solid');
-
+  $('#triangle-down, #playerScoreH').css('opacity', '0.4');
+  $('#triangle-up, #dealerScoreH').css('opacity', '1');
 
   dealerDrawCard();
 
@@ -247,9 +266,13 @@ function dealerTurn() { // After player has finished their turn.
 
     $(`#dealer${noOfDealerCards}`) // Displays drawn card.
       .show()
-      .attr('src', `card-pics/${dealerCard}.jpg`);
+      .attr('src', `card-pics/${dealerCard}.jpg`)
+      .css('filter','brightness(1)');
 
     addGridColumn('#dealerGrid', dealerColumns, noOfDealerCards);
+
+    $('#dealerScoreH').text(dealerTotalScore);
+    $('#playerScoreH').text(playerTotalScore);
 
     if (dealerTotalScore === 21) { // Twenty One.
       console.log('Twenty One');
@@ -277,7 +300,11 @@ function dealerTurn() { // After player has finished their turn.
         window.setTimeout(hitStand('#dealerStand'), shortDelay);
       }
 
-      window.setTimeout(gameEnd, longDelay);
+      window.setTimeout(function() {
+        $('#triangle-up, #dealerScoreH').css('opacity', '0.4');
+
+        gameEnd();
+      }, longerDelay);
     }
   }
 }
@@ -310,6 +337,7 @@ function gameEnd() { // Win, lose or draw.
             $(resultId)
                 .fadeTo('fast', 0)
                 .hide();
+
             displayCards();
           })
 
@@ -347,6 +375,9 @@ function resetGame() { // Resets cards, scores, etc.
 
   $('#dealerGrid, #playerGrid').css('grid-template-columns', '1fr 1fr');
 
+  $('#dealerScoreH').text('0');
+  $('#playerScoreH').text('0');
+
   $('#winH')
       .text('You win!')
       .css('font-size', '100px');
@@ -359,6 +390,7 @@ function resetGame() { // Resets cards, scores, etc.
       .text('Draw')
       .css('font-size', '100px');
 }
+
 
 
 function cardFactory(suit, rank) { // Factory function for creating cards.
