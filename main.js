@@ -1,20 +1,6 @@
+// By Davinder Rana
 
-// ......... Zip up with compressed jquery.js
-// ......... Remove console logs?
-// ....... Tidy card edges
-// ...... Make a tally that shows the number of wins, losses and draws
-// ..... Display current score
-// ..... Add Blackjack rule and "Blackjack!" notice
-// ..... Make webpage responsive
-// .... "You Win!" bigger and "Play again?" smaller
-// .... Make sure that no card appears twice
-// .... Add transitions
-// .... Cards take too long to load - sort out
-// .... Buttons on:hover
-// .. Fade things away when restarting game
-// . Add rules (inc "Dealer must draw on 16 and stand on 17")
-// . Position "Bust" and "21"
-
+// Console logs for debugging left in.
 
 const cards = [];
 let dealerCards = [];
@@ -24,9 +10,10 @@ let playerCards = [];
 let playerTotalScore;
 let playerColumns = '';
 let noOfPlayerCards = 0;
-const shortDelay = 250;
-const mediumDelay = 500;
+const shortDelay = 200;
+const mediumDelay = 450;
 const longDelay = 800;
+const longerDelay = 2400;
 
 
 for (let i = 2; i <= 14; i++) { // Populates cards array using cardFactory().
@@ -39,6 +26,7 @@ for (let i = 2; i <= 14; i++) { // Populates cards array using cardFactory().
 $('#begin').on('click', displayCards);
 
 
+
 function displayCards() { // Begins the game.
   console.log('\ndisplayCards');
   $('.notice')
@@ -49,18 +37,30 @@ function displayCards() { // Begins the game.
   resetGame();
 
   window.setTimeout(function() { // Deals cards.
-    $('#player1').show();
-    window.setTimeout(function() {
-      $('#dealer1').show();
-      window.setTimeout(function() {
-        $('#player2').show();
-        window.setTimeout(function() {
-          $('#dealer2').show();
-          window.setTimeout(dealerFirstTurn, shortDelay);
-        }, shortDelay);
-      }, shortDelay);
-    }, shortDelay);
-  }, mediumDelay);
+    $('#player1')
+        .css('filter','brightness(1.15)')
+        .show();
+  }, shortDelay);
+
+  window.setTimeout(function() {
+    $('#dealer1')
+        .css('filter','brightness(1.15)')
+        .show();
+  }, shortDelay * 2);
+
+  window.setTimeout(function() {
+    $('#player2')
+        .css('filter','brightness(1.15)')
+        .show();
+  }, shortDelay * 3);
+
+  window.setTimeout(function() {
+    $('#dealer2')
+        .css('filter','brightness(1.15)')
+        .show();
+  }, shortDelay * 4);
+
+  window.setTimeout(dealerFirstTurn, shortDelay * 5);
 }
 
 
@@ -81,7 +81,9 @@ function dealerFirstTurn() { // Dealer gets first card face-up.
   console.log(`Total score: ${dealerTotalScore}`)
   console.log('\n');
 
-  $('#dealer1').attr('src', `card-pics/${dealerCard1}.jpg`);
+  $('#dealer1')
+      .css('filter','')
+      .attr('src', `card-pics/${dealerCard1}.jpg`);
 
   playerTurn();
 }
@@ -91,16 +93,14 @@ function playerTurn() { // Once dealer has been dealt first card.
   console.log('\nplayerTurn');
   let drawnCardScore;
 
-  window.setTimeout(function() { // First two cards revealed.
-    playerDrawCard();
+  window.setTimeout(playerDrawCard, mediumDelay);
 
-    window.setTimeout(function() {
-      playerDrawCard();
-      $('#playerTurnDiv').fadeTo('fast', 1);
-      $('#player').css('border-style', 'solid');
-      $('#hit, #stay').fadeTo('fast', 1);
-    }, shortDelay);
-  }, mediumDelay);
+  window.setTimeout(function() {
+    playerDrawCard();
+    $('#playerTurnDiv').fadeTo('fast', 1);
+    $('#player').css('border-style', 'solid');
+    $('#hit, #stand').fadeTo('fast', 1);
+  }, mediumDelay + shortDelay);
 
   function playerDrawCard() {
     console.log('playerDrawCard');
@@ -131,9 +131,9 @@ function playerTurn() { // Once dealer has been dealt first card.
       }
     }
 
-    if (playerTotalScore >= 21) { // Turns off hit and stay buttons.
+    if (playerTotalScore >= 21) { // Turns off hit and stand buttons.
       $('#hit').off('click', hit);
-      $('#stay').off('click', stay);
+      $('#stand').off('click', stand);
     }
 
     console.log(`Player has ${noOfPlayerCards} cards:`);
@@ -144,8 +144,9 @@ function playerTurn() { // Once dealer has been dealt first card.
     let playerCard = cards[randomNum].name;
 
     $(`#player${noOfPlayerCards}`) // Displays drawn card.
-      .show()
-      .attr('src', `card-pics/${playerCard}.jpg`);
+        .show()
+        .attr('src', `card-pics/${playerCard}.jpg`)
+        .css('filter','');
 
     addGridColumn('#playerGrid', playerColumns, noOfPlayerCards);
 
@@ -170,24 +171,24 @@ function playerTurn() { // Once dealer has been dealt first card.
     }
   }
     $('#hit').on('click', hit);
-    $('#stay').on('click', stay);
+    $('#stand').on('click', stand);
 
 
   function hit() { // Hit.
     console.log('hit');
 
-    hitStay('#playerHit');
+    hitStand('#playerHit');
 
     playerDrawCard();
   }
 
-  function stay() { // Stay.
-    console.log('stay');
+  function stand() { // Stand.
+    console.log('stand');
 
-    hitStay('#playerStay');
+    hitStand('#playerStand');
 
     window.setTimeout(dealerTurn, shortDelay);
-    $('#stay').off('click', stay);
+    $('#stand').off('click', stand);
     $('#hit').off('click', hit);
   }
 }
@@ -200,7 +201,7 @@ function dealerTurn() { // After player has finished their turn.
 
   $('#playerTurnDiv').fadeTo('fast', 0);
   $('#player').css('border-style', 'hidden');
-  $('#hit, #stay').fadeTo('fast', 0.4);
+  $('#hit, #stand').fadeTo('fast', 0.4);
   $('#dealerTurnDiv').fadeTo('fast', 1);
   $('#dealer').css('border-style', 'solid');
 
@@ -267,13 +268,13 @@ function dealerTurn() { // After player has finished their turn.
     }
 
     if (dealerTotalScore < 17) { // Hit.
-      window.setTimeout(hitStay('#dealerHit'), shortDelay);
+      window.setTimeout(hitStand('#dealerHit'), shortDelay);
 
       window.setTimeout(dealerDrawCard, longDelay);
 
-    } else { // Stay.
+    } else { // Stand.
       if (dealerTotalScore < 21) {
-        window.setTimeout(hitStay('#dealerStay'), shortDelay);
+        window.setTimeout(hitStand('#dealerStand'), shortDelay);
       }
 
       window.setTimeout(gameEnd, longDelay);
@@ -292,14 +293,14 @@ function gameEnd() { // Win, lose or draw.
   if (dealerTotalScore > 21) dealerTotalScore = 0;
 
   if (playerTotalScore > dealerTotalScore) {
-    winLoseDraw('WIN', '#win');
+    winLoseDraw('WIN', '#win', '#winH');
   } else if (playerTotalScore < dealerTotalScore) {
-    winLoseDraw('LOSE', '#lose');
+    winLoseDraw('LOSE', '#lose', '#loseH');
   } else {
-    winLoseDraw('DRAW', '#draw');
+    winLoseDraw('DRAW', '#draw', '#drawH');
   }
 
-  function winLoseDraw(result, resultId) {
+  function winLoseDraw(result, resultId, resultHeading) {
     console.log(result);
     window.setTimeout(function() {
       $(resultId)
@@ -310,7 +311,14 @@ function gameEnd() { // Win, lose or draw.
                 .fadeTo('fast', 0)
                 .hide();
             displayCards();
-          });
+          })
+
+      window.setTimeout(function() {
+        $(resultHeading)
+            .text('- Click here to play again -')
+            .css('font-size', '60px');
+      }, longerDelay);
+
     }, longDelay);
   }
 }
@@ -338,6 +346,18 @@ function resetGame() { // Resets cards, scores, etc.
   $('#win, #lose, #draw').off('click');
 
   $('#dealerGrid, #playerGrid').css('grid-template-columns', '1fr 1fr');
+
+  $('#winH')
+      .text('You win!')
+      .css('font-size', '100px');
+
+  $('#loseH')
+      .text('Dealer wins!')
+      .css('font-size', '100px');
+
+  $('#drawH')
+      .text('Draw')
+      .css('font-size', '100px');
 }
 
 
@@ -380,7 +400,7 @@ function addGridColumn(whichGrid, whichColumns, noOfCards) { // Adds a new grid 
 }
 
 
-function hitStay(playerChoiceId, delay) { // If Player or Dealer hits or stays.
+function hitStand(playerChoiceId, delay) { // If Player or Dealer hits or stands.
   $(playerChoiceId)
       .show()
       .fadeTo('fast', 1);
